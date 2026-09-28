@@ -23,6 +23,7 @@ const OwnerLogin = () => {
           },
           body: JSON.stringify({
             credential,
+            loginType: "owner",
           }),
         },
       );
@@ -33,9 +34,7 @@ const OwnerLogin = () => {
         throw new Error(data.message || "Google login failed");
       }
 
-      if (data.user.role !== "owner") {
-        throw new Error("This Google account is not registered as an owner.");
-      }
+     
 
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));

@@ -191,13 +191,23 @@ router.post("/login", async (req, res) => {
 // GOOGLE LOGIN
 // =========================
 
+// =========================
+// GOOGLE LOGIN
+// =========================
+
 router.post("/google", async (req, res) => {
   try {
-    const { credential } = req.body;
+    const { credential, loginType = "customer" } = req.body;
 
     if (!credential) {
       return res.status(400).json({
         message: "Google credential is required",
+      });
+    }
+
+    if (!["customer", "owner"].includes(loginType)) {
+      return res.status(400).json({
+        message: "Invalid login type",
       });
     }
 
@@ -232,10 +242,25 @@ router.post("/google", async (req, res) => {
         user.googleId = googleId;
         await user.save();
       }
-    } else {
-      // Create customer account
-      const randomPassword = crypto.randomBytes(32).toString("hex");
 
+      // If using Owner Login, existing account must be an owner
+      if (loginType === "owner" && user.role !== "owner") {
+        return res.status(403).json({
+          message:
+            "This Google account is registered as a customer, not an owner.",
+        });
+      }
+
+      // If using Customer Login, existing account must be a customer
+      if (loginType === "customer" && user.role !== "customer") {
+        return res.status(403).json({
+          message:
+            "This Google account is registered as an owner, not a customer.",
+        });
+      }
+    } else {
+      // Create new account with the requested role
+      const randomPassword = crypto.randomBytes(32).toString("hex");
       const hashedPassword = await bcrypt.hash(randomPassword, 10);
 
       user = await User.create({
@@ -244,7 +269,7 @@ router.post("/google", async (req, res) => {
         phone: "",
         password: hashedPassword,
         googleId,
-        role: "customer",
+        role: loginType,
       });
     }
 

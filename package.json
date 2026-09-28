@@ -6,7 +6,8 @@
   "scripts": {
     "frontend": "vite",
     "backend": "npm run dev --prefix backend",
-    "dev": "concurrently \"npm run frontend\" \"npm run backend\""
+    "dev": "concurrently \"npm run frontend\" \"npm run backend\"",
+    "build": "vite build"
   },
   "dependencies": {
     "bootstrap": "^5.3.8",

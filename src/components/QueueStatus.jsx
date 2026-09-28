@@ -21,7 +21,7 @@ const QueueStatus = () => {
       }
 
       const response = await fetch(
-        `http://localhost:5000/api/queues/${id}/status`,
+        `${import.meta.env.VITE_API_URL}/api/queues/${id}/status`,
         {
           headers: {
             "auth-token": token,
@@ -55,7 +55,7 @@ const QueueStatus = () => {
       setExitLoading(true);
 
       const response = await fetch(
-        `http://localhost:5000/api/queues/${id}/exit`,
+        `${import.meta.env.VITE_API_URL}/api/queues/${id}/exit`,
         {
           method: "POST",
           headers: {

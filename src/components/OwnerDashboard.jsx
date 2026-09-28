@@ -16,11 +16,14 @@ const OwnerDashboard = () => {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await fetch("http://localhost:5000/api/queues/my", {
-        headers: {
-          "auth-token": token,
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/queues/my`,
+        {
+          headers: {
+            "auth-token": token,
+          },
         },
-      });
+      );
 
       const data = await response.json();
 
@@ -41,7 +44,7 @@ const OwnerDashboard = () => {
   };
 
   useEffect(() => {
-    const socket = io("http://localhost:5000");
+    const socket = io(import.meta.env.VITE_API_URL);
 
     socket.on("connect", () => {
       if (selectedQueue) {
@@ -50,8 +53,6 @@ const OwnerDashboard = () => {
     });
 
     socket.on("queueUpdated", (data) => {
-     
-
       if (selectedQueue && String(data.queueId) === String(selectedQueue._id)) {
         fetchQueues();
       }
@@ -86,7 +87,7 @@ const OwnerDashboard = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/queues/${selectedQueue._id}/next`,
+        `${import.meta.env.VITE_API_URL}/api/queues/${selectedQueue._id}/next`,
         {
           method: "POST",
           headers: {
@@ -130,7 +131,7 @@ const OwnerDashboard = () => {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        `http://localhost:5000/api/queues/${queue._id}/complete`,
+        `${import.meta.env.VITE_API_URL}/api/queues/${queue._id}/complete`,
         {
           method: "POST",
           headers: {
@@ -140,8 +141,6 @@ const OwnerDashboard = () => {
       );
 
       const data = await response.json();
-
-     
 
       if (response.ok) {
         const updatedQueue = {
@@ -178,7 +177,7 @@ const OwnerDashboard = () => {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        `http://localhost:5000/api/queues/${queue._id}/skip`,
+        `${import.meta.env.VITE_API_URL}/api/queues/${queue._id}/skip`,
         {
           method: "POST",
           headers: {
@@ -188,8 +187,6 @@ const OwnerDashboard = () => {
       );
 
       const data = await response.json();
-
-   
 
       if (response.ok) {
         const updatedQueue = {
@@ -226,7 +223,7 @@ const OwnerDashboard = () => {
       const action = queue.status === "paused" ? "resume" : "pause";
 
       const response = await fetch(
-        `http://localhost:5000/api/queues/${queue._id}/${action}`,
+        `${import.meta.env.VITE_API_URL}/api/queues/${queue._id}/${action}`,
         {
           method: "POST",
           headers: {
@@ -236,8 +233,6 @@ const OwnerDashboard = () => {
       );
 
       const data = await response.json();
-
-     
 
       if (response.ok) {
         const updatedQueue = {
@@ -282,7 +277,7 @@ const OwnerDashboard = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/queues/${queue._id}`,
+        `${import.meta.env.VITE_API_URL}/api/queues/${queue._id}`,
         {
           method: "DELETE",
           headers: {
@@ -321,23 +316,14 @@ const OwnerDashboard = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/queues/${editQueue._id}`,
+        `${import.meta.env.VITE_API_URL}/api/queues/${editQueue._id}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
             "auth-token": localStorage.getItem("token"),
           },
-          body: JSON.stringify({
-            queueName: editQueue.queueName,
-            serviceName: editQueue.serviceName,
-            description: editQueue.description,
-            location: editQueue.location,
-            openingTime: editQueue.openingTime,
-            closingTime: editQueue.closingTime,
-            averageServiceTime: editQueue.averageServiceTime,
-            maxCapacity: editQueue.maxCapacity,
-          }),
+          body: JSON.stringify(editQueue),
         },
       );
 

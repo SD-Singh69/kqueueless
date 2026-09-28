@@ -30,13 +30,16 @@ const Signup = () => {
       setLoading(true);
       setError("");
 
-      const response = await fetch("http://localhost:5000/api/auth/google", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/auth/google`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ credential }),
         },
-        body: JSON.stringify({ credential }),
-      });
+      );
 
       const data = await response.json();
 
@@ -118,7 +121,7 @@ const Signup = () => {
       setLoading(true);
 
       const response = await fetch(
-        "http://localhost:5000/api/auth/customer/signup",
+        `${import.meta.env.VITE_API_URL}/api/auth/customer/signup`,
         {
           method: "POST",
           headers: {

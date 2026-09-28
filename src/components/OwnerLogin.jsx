@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const OwnerLogin = () => {
+  const navigate = useNavigate();
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const handleGoogleLogin = async (credential) => {
     try {
       setLoading(true);
@@ -30,7 +33,6 @@ const OwnerLogin = () => {
         throw new Error(data.message || "Google login failed");
       }
 
-      // Only allow owner accounts
       if (data.user.role !== "owner") {
         throw new Error("This Google account is not registered as an owner.");
       }
@@ -115,8 +117,8 @@ const OwnerLogin = () => {
 
       if (response.ok) {
         localStorage.setItem("token", data.token);
-
-        window.location.href = "/owner-dashboard";
+        localStorage.setItem("user", JSON.stringify(data.user));
+        navigate("/owner-dashboard");
       } else {
         console.error("LOGIN FAILED:", data.message);
       }
@@ -161,7 +163,11 @@ const OwnerLogin = () => {
                     Login to manage your queues and business
                   </p>
                 </div>
-
+                {error && (
+                  <div className="alert alert-danger" role="alert">
+                    {error}
+                  </div>
+                )}
                 <form onSubmit={handleSubmit}>
                   {/* Email */}
                   <div className="mb-3">
